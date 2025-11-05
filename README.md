@@ -1,144 +1,126 @@
-# 🚀 ML Experiment Tracking Platform
+# 🚀 ML Experiment Tracker
 
-Track your machine learning experiments with ease! A complete platform with a beautiful web interface and dead-simple Python integration.
+Track your machine learning experiments super easily! Beautiful dashboard + simple Python integration.
 
-## ✨ What You Get
+**Live Demo:** https://ml-tracking-app.vercel.app
 
-- **🎨 Beautiful Dashboard** - See all your experiments in one place
-- **📊 Interactive Charts** - Visualize metrics with export to PNG
-- **⚡ 4-Line Integration** - Add tracking to any ML project instantly
-- **🔍 Search & Filter** - Find experiments by name, ID, or tags
-- **📦 Artifact Storage** - Save models, plots, and datasets
-- **🌙 Dark Mode** - Easy on the eyes
+## What You Get
 
-## 🚀 Quick Start
+- 🎨 **Beautiful Dashboard** - View all experiments in one place
+- 📊 **Charts & Visualizations** - Track metrics in real-time
+- ⚡ **4-Line Integration** - Add to any ML project instantly
+- 📦 **Save Models** - Upload and download trained models
+- 🔍 **Search Everything** - Find experiments fast
+- 🌙 **Dark Mode** - Looks great day or night
 
-### 1. Start the Platform
+## Quick Start (Local)
 
 ```bash
-# Start backend (FastAPI + PostgreSQL)
+# 1. Start the backend (FastAPI + PostgreSQL)
 docker-compose up -d
 
-# Start frontend (Next.js)
+# 2. Start the frontend (Next.js)
 cd frontend
 npm install
 npm run dev
 ```
 
-**That's it!** 
-- Dashboard: http://localhost:3000
-- API: http://localhost:8000
+Open http://localhost:3000 - Done! 🎉
 
-### 2. Track Your Experiments
+## Track Your Experiments
 
-**Option A: Use the Simple Tracker (Recommended)**
+### Option 1: Simple Python File (Easiest)
 
-1. Download `mltracker.py` from http://localhost:3000/integration
-2. Drop it in your ML project
-3. Use it:
+Download `mltracker.py` from the integration page, then:
 
 ```python
 from mltracker import tracker
 
-tracker.start("My Model", lr=0.001, epochs=100)
+# Start tracking
+tracker.start("My Cool Model", lr=0.001, epochs=100)
 
+# Log metrics during training
 for epoch in range(100):
-    loss = train_step()  # your training code
+    loss = train()  # your training code
     tracker.log("loss", loss, step=epoch)
 
+# Save your model
 tracker.save_model("model.pkl")
+
+# Done!
 tracker.finish()
 ```
 
-**Option B: Use the REST API**
+### Option 2: REST API
 
-See http://localhost:3000/integration for complete examples in Python, cURL, and Node.js.
+See full examples at http://localhost:3000/integration
 
-## 📚 Documentation
-
-- **Integration Guide**: http://localhost:3000/integration
-- **API Docs**: http://localhost:8000/docs
-- **Examples**: Check the `/examples` folder
-
-## 🛠️ Tech Stack
-
-**Frontend:**
-- Next.js 16 with TypeScript
-- Tailwind CSS v4
-- shadcn/ui components
-- TanStack Query for data fetching
-- Recharts for visualizations
-
-**Backend:**
-- FastAPI
-- PostgreSQL 15
-- SQLAlchemy ORM
-- Docker & Docker Compose
-
-## 📁 Project Structure
+## What's Inside
 
 ```
 MlTrackingAPP/
-├── mltracker.py          # Simple Python tracker (use this!)
-├── frontend/             # Next.js web interface
-├── app/                  # FastAPI backend
-├── examples/             # Example integrations
-└── docker-compose.yml    # One-command setup
+├── mltracker.py          # Copy this to your ML project
+├── frontend/             # Web dashboard (Next.js)
+├── app/                  # Backend API (FastAPI)
+├── examples/             # PyTorch, TensorFlow, scikit-learn examples
+└── docker-compose.yml    # One command to start everything
 ```
 
-## 🎯 Common Tasks
+## Common Commands
 
 ```bash
 # Start everything
 docker-compose up -d && cd frontend && npm run dev
 
-# Stop everything
+# Stop everything  
 docker-compose down
 
-# View logs
-docker-compose logs -f
-
-# Reset database
-docker-compose down -v
-docker-compose up -d
+# Reset database (delete all experiments)
+docker-compose down -v && docker-compose up -d
 
 # Run tests
 pytest
 ```
 
-## 📊 API Endpoints
+## Tech Stack
 
-- `POST /experiments` - Create experiment
-- `GET /experiments` - List all experiments
-- `GET /experiments/{id}` - Get experiment details
-- `PUT /experiments/{id}/status` - Update status
-- `PUT /experiments/{id}/tags` - Update tags
-- `DELETE /experiments/{id}` - Delete experiment
+**Frontend:** Next.js 16, TypeScript, Tailwind CSS, shadcn/ui  
+**Backend:** FastAPI, PostgreSQL, Docker  
+**Integration:** Single Python file (no dependencies!)
+
+## Deployment
+
+Already deployed! 🎉
+- **Frontend:** https://ml-tracking-app.vercel.app
+- **Backend:** https://ml-tracking-api.onrender.com
+
+Want to deploy your own? It's on Vercel + Render (free tier).
+
+## API Endpoints
+
+All available at http://localhost:8000/docs
+
+- `POST /experiments` - Create new experiment
+- `GET /experiments` - List all experiments  
+- `GET /experiments/{id}` - Get one experiment
 - `POST /experiments/{id}/metrics` - Log metrics
-- `GET /experiments/{id}/metrics` - Get metrics
-- `POST /experiments/{id}/artifacts` - Upload artifact
-- `GET /experiments/{id}/artifacts` - List artifacts
+- `POST /artifacts/experiments/{id}/upload` - Upload model file
 
-**Full interactive docs**: http://localhost:8000/docs
+## Examples
 
-## 🚢 Deployment
+Check the `/examples` folder:
+- `pytorch_example.py` - PyTorch training
+- `sklearn_example.py` - Scikit-learn model
+- `tensorflow_example.py` - TensorFlow/Keras
 
-**Frontend**: Deploy to Vercel
-```bash
-cd frontend
-vercel
-```
+## Need Help?
 
-**Backend**: Use Railway or any Docker-compatible platform
+Visit the integration page: http://localhost:3000/integration
 
-## 🤝 Contributing
+## License
 
-This is a learning project. Feel free to use it for your experiments!
-
-## 📄 License
-
-MIT License - Use it however you want!
+MIT - Use it however you want! 🚀
 
 ---
 
-**Need help?** Visit http://localhost:3000/integration for examples and documentation.
+Built for ML engineers who want simple experiment tracking without the complexity.
