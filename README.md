@@ -123,21 +123,13 @@ pytest
 
 ## 🚢 Deployment
 
-Ready to go live? Check out **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete guides:
-
-- **Vercel + Railway** (Easiest - Free tier, ~15 min setup)
-- **Render** (All-in-one platform)
-- **AWS/DigitalOcean** (Full control with Docker)
-- **Heroku** (Classic deployment)
-
-Quick start:
+**Frontend**: Deploy to Vercel
 ```bash
-# Deploy frontend to Vercel
-cd frontend && vercel
-
-# Deploy backend to Railway or Render
-# See DEPLOYMENT.md for step-by-step guides
+cd frontend
+vercel
 ```
+
+**Backend**: Use Railway or any Docker-compatible platform
 
 ## 🤝 Contributing
 
