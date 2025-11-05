@@ -123,12 +123,20 @@ pytest
 
 ## 🚢 Deployment
 
-**Backend**: Docker-ready for AWS ECS, Azure, Google Cloud Run
+Ready to go live? Check out **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete guides:
 
-**Frontend**: Deploy to Vercel or Netlify
+- **Vercel + Railway** (Easiest - Free tier, ~15 min setup)
+- **Render** (All-in-one platform)
+- **AWS/DigitalOcean** (Full control with Docker)
+- **Heroku** (Classic deployment)
+
+Quick start:
 ```bash
-cd frontend
-npm run build
+# Deploy frontend to Vercel
+cd frontend && vercel
+
+# Deploy backend to Railway or Render
+# See DEPLOYMENT.md for step-by-step guides
 ```
 
 ## 🤝 Contributing
