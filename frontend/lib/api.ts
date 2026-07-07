@@ -19,11 +19,14 @@ const api = axios.create({
 });
 
 // Experiments
+const PAGE_SIZE = 20;
+
 export const getExperiments = async (
   page: number = 1,
   status?: string
 ): Promise<Experiment[]> => {
-  const params: Record<string, number | string> = { skip: (page - 1) * 20, limit: 20 };
+  // Backend expects 1-based `page` + `size` (app/routers/experiments.py:35-36).
+  const params: Record<string, number | string> = { page, size: PAGE_SIZE };
   if (status && status !== 'all') {
     params.status = status;
   }

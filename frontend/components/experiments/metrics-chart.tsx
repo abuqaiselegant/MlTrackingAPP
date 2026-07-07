@@ -29,7 +29,7 @@ export function MetricsChart({ metrics }: MetricsChartProps) {
 
     try {
       const canvas = await html2canvas(chartElement, {
-        backgroundColor: '#ffffff',
+        backgroundColor: '#0a0a0a',
         scale: 2,
       });
       
@@ -51,7 +51,7 @@ export function MetricsChart({ metrics }: MetricsChartProps) {
     return acc;
   }, {} as Record<string, Metric[]>);
 
-  const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899'];
+  const colors = ['#faff69', '#3b82f6', '#22c55e', '#ef4444', '#a78bfa', '#ec4899'];
 
   return (
     <div className="space-y-6">
@@ -68,48 +68,57 @@ export function MetricsChart({ metrics }: MetricsChartProps) {
           <Card key={metricName} ref={(el) => { chartRefs.current[metricName] = el; }}>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg capitalize">{metricName}</CardTitle>
+                <CardTitle className="capitalize">{metricName}</CardTitle>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => handleExportChart(metricName)}
                 >
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className="h-4 w-4" />
                   Export
                 </Button>
               </div>
             </CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                  <XAxis 
-                    dataKey="step" 
-                    label={{ value: 'Step', position: 'insideBottom', offset: -5 }}
-                    className="text-sm"
+                <LineChart data={chartData} margin={{ top: 8, right: 16, bottom: 8, left: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#2a2a2a" />
+                  <XAxis
+                    dataKey="step"
+                    stroke="#5a5a5a"
+                    tick={{ fill: '#888888', fontSize: 12 }}
+                    tickLine={{ stroke: '#2a2a2a' }}
+                    axisLine={{ stroke: '#2a2a2a' }}
+                    label={{ value: 'Step', position: 'insideBottom', offset: -4, fill: '#888888', fontSize: 12 }}
                   />
-                  <YAxis 
-                    label={{ value: 'Value', angle: -90, position: 'insideLeft' }}
-                    className="text-sm"
+                  <YAxis
+                    stroke="#5a5a5a"
+                    tick={{ fill: '#888888', fontSize: 12 }}
+                    tickLine={{ stroke: '#2a2a2a' }}
+                    axisLine={{ stroke: '#2a2a2a' }}
+                    width={56}
                   />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'hsl(var(--background))', 
-                      border: '1px solid hsl(var(--border))',
-                      borderRadius: '8px'
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: '#1a1a1a',
+                      border: '1px solid #2a2a2a',
+                      borderRadius: '8px',
+                      color: '#ffffff',
                     }}
+                    labelStyle={{ color: '#888888' }}
+                    cursor={{ stroke: '#3a3a3a' }}
                   />
                   <Line
                     type="monotone"
                     dataKey="value"
                     stroke={colors[index % colors.length]}
                     strokeWidth={2}
-                    dot={{ r: 3 }}
+                    dot={{ r: 2, fill: colors[index % colors.length] }}
                     activeDot={{ r: 5 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
-              <div className="mt-2 text-sm text-muted-foreground text-center">
+              <div className="mt-3 text-center text-xs text-muted-soft">
                 {chartData.length} data points
               </div>
             </CardContent>

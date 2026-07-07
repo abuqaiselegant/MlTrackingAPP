@@ -93,26 +93,39 @@ export default function ExperimentDetailPage() {
   };
 
   if (expLoading) {
-    return <div className="text-center py-8">Loading experiment...</div>;
+    return (
+      <div className="py-16 text-center text-sm text-muted-foreground">
+        Loading experiment...
+      </div>
+    );
   }
 
   if (!experiment) {
-    return <div className="text-center py-8">Experiment not found</div>;
+    return (
+      <div className="py-16 text-center text-sm text-muted-foreground">
+        Experiment not found
+      </div>
+    );
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <Link href="/" className="text-sm text-muted-foreground hover:underline mb-2 inline-block">
+          <Link
+            href="/"
+            className="mb-3 inline-block text-sm text-muted-foreground transition-colors hover:text-brand-yellow"
+          >
             ← Back to experiments
           </Link>
-          <h1 className="text-3xl font-bold tracking-tight">{experiment.name}</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight text-on-dark sm:text-4xl">
+            {experiment.name}
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
             Created {new Date(experiment.created_at).toLocaleString()}
           </p>
         </div>
-        <StatusBadge 
+        <StatusBadge
           status={experiment.status}
           onStatusChange={(newStatus) => statusMutation.mutate(newStatus)}
           disabled={statusMutation.isPending}
@@ -166,16 +179,21 @@ export default function ExperimentDetailPage() {
                 {Object.keys(experiment.hyperparameters).length > 0 ? (
                   <div className="space-y-2">
                     {Object.entries(experiment.hyperparameters).map(([key, value]) => (
-                      <div key={key} className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                        <span className="font-medium">{key}</span>
-                        <code className="text-sm bg-background px-2 py-1 rounded">
+                      <div
+                        key={key}
+                        className="flex items-center justify-between rounded-md border border-hairline bg-surface-elevated px-4 py-3"
+                      >
+                        <span className="font-mono text-sm text-body">{key}</span>
+                        <code className="rounded bg-canvas px-2.5 py-1 font-mono text-sm text-brand-yellow">
                           {typeof value === 'object' ? JSON.stringify(value) : String(value)}
                         </code>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-muted-foreground text-center py-4">No hyperparameters configured</p>
+                  <p className="py-6 text-center text-sm text-muted-foreground">
+                    No hyperparameters configured
+                  </p>
                 )}
               </CardContent>
             </Card>

@@ -48,11 +48,11 @@ function SortableHeader({
   };
 
   return (
-    <TableHead>
+    <TableHead className="h-11">
       <Button
         variant="ghost"
         onClick={() => onSort?.(field)}
-        className="h-auto p-0 hover:bg-transparent font-semibold"
+        className="h-auto p-0 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:bg-transparent hover:text-on-dark"
       >
         {children}
         {getSortIcon()}
@@ -94,37 +94,41 @@ export function ExperimentsTable({ experiments, sortBy, sortOrder, onSort }: Exp
   };
 
   return (
-    <div className="rounded-md border">
+    <div className="overflow-hidden rounded-[12px] border border-hairline bg-surface-card">
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className="border-hairline hover:bg-transparent">
             <SortableHeader field="name" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
               Name
             </SortableHeader>
             <SortableHeader field="status" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
               Status
             </SortableHeader>
-            <TableHead>Tags</TableHead>
+            <TableHead className="h-11 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Tags
+            </TableHead>
             <SortableHeader field="date" sortBy={sortBy} sortOrder={sortOrder} onSort={onSort}>
               Created
             </SortableHeader>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead className="h-11 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {experiments.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={5} className="text-center text-muted-foreground">
+            <TableRow className="border-hairline hover:bg-transparent">
+              <TableCell colSpan={5} className="py-12 text-center text-muted-foreground">
                 No experiments found
               </TableCell>
             </TableRow>
           ) : (
             experiments.map((experiment) => (
-              <TableRow key={experiment.id} className="hover:bg-muted/50">
-                <TableCell>
+              <TableRow key={experiment.id} className="border-hairline hover:bg-surface-elevated/60">
+                <TableCell className="py-3.5">
                   <Link
                     href={`/experiments/${experiment.id}`}
-                    className="font-medium hover:underline"
+                    className="font-semibold text-on-dark transition-colors hover:text-brand-yellow"
                   >
                     {experiment.name}
                   </Link>

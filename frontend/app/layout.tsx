@@ -1,19 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { ThemeProvider } from "@/components/theme-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
-import Link from "next/link";
+import { SiteNav } from "@/components/site-nav";
+import { SiteFooter } from "@/components/site-footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains",
   subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 export const metadata: Metadata = {
@@ -27,48 +28,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Providers>
-            <div className="min-h-screen bg-background">
-              <header className="border-b">
-                <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-                  <Link href="/" className="hover:opacity-80 transition-opacity">
-                    <h1 className="text-2xl font-bold">ML Experiment Tracker</h1>
-                  </Link>
-                  <div className="flex items-center gap-4">
-                    <nav className="flex items-center gap-4">
-                      <Link 
-                        href="/" 
-                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        Dashboard
-                      </Link>
-                      <Link 
-                        href="/integration" 
-                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        Integration
-                      </Link>
-                    </nav>
-                    <ThemeToggle />
-                  </div>
-                </div>
-              </header>
-              <main className="container mx-auto px-4 py-8">
-                {children}
-              </main>
-            </div>
-          </Providers>
-        </ThemeProvider>
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}>
+        <Providers>
+          <div className="flex min-h-screen flex-col bg-canvas">
+            <SiteNav />
+            <main className="mx-auto w-full max-w-[1280px] flex-1 px-4 py-10 sm:px-6 sm:py-14">
+              {children}
+            </main>
+            <SiteFooter />
+          </div>
+        </Providers>
       </body>
     </html>
   );
