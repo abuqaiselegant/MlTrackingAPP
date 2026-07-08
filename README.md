@@ -6,12 +6,11 @@ Track your machine learning experiments super easily! Beautiful dashboard + simp
 
 ## What You Get
 
-- 🎨 **Beautiful Dashboard** - View all experiments in one place
-- 📊 **Charts & Visualizations** - Track metrics in real-time
-- ⚡ **4-Line Integration** - Add to any ML project instantly
-- 📦 **Save Models** - Upload and download trained models
-- 🔍 **Search Everything** - Find experiments fast
-- 🌙 **Dark Mode** - Looks great day or night
+- **Dashboard** - View all experiments in one place
+- **Charts & Visualizations** - Track metrics in real-time
+- **4-Line Integration** - Add to any ML project instantly
+- **Save Models** - Upload and download trained models
+- **Search Everything** - Find experiments fast
 
 ## Quick Start (Local)
 
@@ -90,7 +89,7 @@ pytest
 
 ## Deployment
 
-Already deployed! 🎉
+Already deployed! 
 - **Frontend:** https://ml-tracking-app.vercel.app
 - **Backend:** https://ml-tracking-api.onrender.com
 
@@ -119,7 +118,7 @@ Visit the integration page: http://localhost:3000/integration
 
 ## License
 
-MIT - Use it however you want! 🚀
+MIT - Use it however you want! 
 
 ---
 
