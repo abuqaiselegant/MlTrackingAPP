@@ -5,42 +5,73 @@ import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { Copy, Check, Code, BookOpen, Zap, Download, ChevronDown, ChevronUp } from 'lucide-react';
+import { Copy, Check, Download, ArrowRight } from 'lucide-react';
 
-function CodeBlock({ code, id, copiedCode, onCopy }: { 
-  code: string; 
-  id: string; 
+function CodeWindow({
+  code,
+  id,
+  filename,
+  copiedCode,
+  onCopy,
+}: {
+  code: string;
+  id: string;
+  filename: string;
   copiedCode: string | null;
   onCopy: (code: string, id: string) => void;
 }) {
   return (
-    <div className="relative">
-      <div className="absolute right-2 top-2 z-10">
-        <Button
-          variant="ghost"
-          size="sm"
+    <div className="code-window">
+      <div className="code-window__bar">
+        <span className="code-window__dot bg-[#ff5f56]" />
+        <span className="code-window__dot bg-[#ffbd2e]" />
+        <span className="code-window__dot bg-[#27c93f]" />
+        <span className="ml-2 text-xs text-muted-foreground">{filename}</span>
+        <button
           onClick={() => onCopy(code, id)}
-          className="h-8 w-8 p-0"
+          className="ml-auto flex items-center gap-1.5 rounded-md px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-surface-elevated hover:text-on-dark"
         >
           {copiedCode === id ? (
-            <Check className="h-4 w-4 text-green-500" />
+            <>
+              <Check className="h-3.5 w-3.5 text-success" /> Copied
+            </>
           ) : (
-            <Copy className="h-4 w-4" />
+            <>
+              <Copy className="h-3.5 w-3.5" /> Copy
+            </>
           )}
-        </Button>
+        </button>
       </div>
-      <pre className="overflow-x-auto rounded-lg border bg-muted p-4 text-sm">
+      <pre className="overflow-x-auto p-6 text-[13px] leading-relaxed text-body-strong">
         <code>{code}</code>
       </pre>
     </div>
   );
 }
 
+const METHOD_STYLES: Record<string, string> = {
+  GET: 'bg-info/10 text-[#7cb0ff] border-info/30',
+  POST: 'bg-success/10 text-success border-success/30',
+  PUT: 'bg-[#f59e0b]/10 text-[#f5b544] border-[#f59e0b]/30',
+  DELETE: 'bg-destructive/10 text-[#ff8a8a] border-destructive/30',
+};
+
+function Endpoint({ method, path, desc }: { method: string; path: string; desc: string }) {
+  return (
+    <div className="flex flex-col gap-2 rounded-[12px] border border-hairline bg-surface-card p-4 sm:flex-row sm:items-center sm:gap-4">
+      <span
+        className={`inline-flex w-fit items-center rounded-md border px-2.5 py-1 font-mono text-xs font-semibold ${METHOD_STYLES[method]}`}
+      >
+        {method}
+      </span>
+      <code className="font-mono text-sm text-on-dark">{path}</code>
+      <span className="text-sm text-muted-foreground sm:ml-auto">{desc}</span>
+    </div>
+  );
+}
+
 export default function IntegrationPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
-  const [showPythonCode, setShowPythonCode] = useState(false);
-  const [showCurlCode, setShowCurlCode] = useState(false);
-  const [showNodeCode, setShowNodeCode] = useState(false);
 
   const copyToClipboard = (code: string, id: string) => {
     navigator.clipboard.writeText(code);
@@ -67,7 +98,6 @@ export default function IntegrationPage() {
 
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-  // Simple, human-friendly Python example
   const pythonExample = `from mltracker import tracker
 
 # Start tracking your experiment
@@ -86,7 +116,6 @@ tracker.finish()
 
 # That's it! Check the dashboard to see your results.`;
 
-  // Simple curl examples
   const curlExample = `# Create an experiment
 curl -X POST "${apiUrl}/experiments" \\
   -H "Content-Type: application/json" \\
@@ -102,7 +131,6 @@ curl -X PUT "${apiUrl}/experiments/YOUR_EXPERIMENT_ID/status" \\
   -H "Content-Type: application/json" \\
   -d '{"status": "completed"}'`;
 
-  // Simple Node.js example
   const nodeExample = `const axios = require('axios');
 
 const API_URL = '${apiUrl}';
@@ -136,306 +164,186 @@ async function logMetric(name, value, step) {
 })();`;
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Integrate with Your Project</h1>
-          <p className="text-muted-foreground">
-            Add experiment tracking to any ML project in minutes
+    <div className="space-y-24">
+      {/* Hero */}
+      <section>
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <span className="badge-yellow">Integration</span>
+            <h1 className="mt-6 max-w-2xl text-4xl font-bold leading-[1.08] tracking-[-0.02em] text-on-dark sm:text-5xl">
+              Add tracking to any project in minutes.
+            </h1>
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-body">
+              One file. No setup. Drop <code className="font-mono text-brand-yellow">mltracker.py</code>{' '}
+              into your project and start logging with four lines of code.
+            </p>
+          </div>
+          <Link href="/">
+            <Button variant="outline">← Back to dashboard</Button>
+          </Link>
+        </div>
+
+        {/* Steps */}
+        <div className="mt-12 grid gap-4 md:grid-cols-3">
+          {[
+            { n: '1', title: 'Start tracking', body: 'Give your experiment a name and add hyperparameters.' },
+            { n: '2', title: 'Log results', body: 'Record metrics like accuracy and loss as you train.' },
+            { n: '3', title: 'Save & view', body: 'Upload your model and see charts on the dashboard.' },
+          ].map((step) => (
+            <div key={step.n} className="rounded-[12px] border border-hairline bg-surface-card p-8">
+              <div className="stat-callout text-4xl">{step.n}</div>
+              <h3 className="mt-4 text-base font-semibold text-on-dark">{step.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Download CTA band */}
+      <section className="cta-band flex flex-col items-start justify-between gap-8 p-8 sm:flex-row sm:items-center sm:p-10">
+        <div className="max-w-lg">
+          <h2 className="text-2xl font-bold tracking-tight text-[#0a0a0a] sm:text-3xl">
+            Get the tracker file
+          </h2>
+          <p className="mt-2 text-sm text-[#0a0a0a]/70">
+            A single Python file with only <code className="font-mono">requests</code> as a
+            dependency. Drop it in your project and start tracking.
           </p>
         </div>
-        <Link href="/">
-          <Button variant="outline">← Back to Dashboard</Button>
-        </Link>
-      </div>
+        <button
+          onClick={downloadMLTracker}
+          className="inline-flex h-11 shrink-0 items-center gap-2 rounded-md bg-[#0a0a0a] px-6 text-sm font-semibold text-brand-yellow transition-colors hover:bg-[#1a1a1a]"
+        >
+          <Download className="h-4 w-4" />
+          Download mltracker.py
+        </button>
+      </section>
 
-      {/* Quick Start */}
-      <Card className="border-primary/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Zap className="h-5 w-5 text-primary" />
-            How It Works
-          </CardTitle>
-          <CardDescription>Track your experiments in 3 simple steps</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="space-y-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-                1
-              </div>
-              <h3 className="font-semibold">Start Tracking</h3>
-              <p className="text-sm text-muted-foreground">
-                Give your experiment a name and add hyperparameters
-              </p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-                2
-              </div>
-              <h3 className="font-semibold">Log Results</h3>
-              <p className="text-sm text-muted-foreground">
-                Record metrics like accuracy and loss as you train
-              </p>
-            </div>
-            <div className="space-y-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
-                3
-              </div>
-              <h3 className="font-semibold">Save & View</h3>
-              <p className="text-sm text-muted-foreground">
-                Upload your model and see beautiful charts on the dashboard
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Download MLTracker */}
-      <Card className="border-green-500/20 bg-green-500/5">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Download className="h-5 w-5 text-green-600 dark:text-green-400" />
-            Get the Tracker File
-          </CardTitle>
-          <CardDescription>
-            One file. No setup. Just works.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-            <div className="space-y-1">
-              <p className="text-sm font-medium">Download mltracker.py</p>
-              <p className="text-xs text-muted-foreground">
-                Drop it in your project and start tracking with 4 lines of code
-              </p>
-            </div>
-            <Button 
-              onClick={downloadMLTracker}
-              className="gap-2 bg-green-600 hover:bg-green-700"
-            >
-              <Download className="h-4 w-4" />
-              Download File
-            </Button>
-          </div>
-          
-          <div className="rounded-lg border bg-muted/50 p-4">
-            <p className="text-sm font-semibold mb-2">Then use it like this:</p>
-            <pre className="text-xs overflow-x-auto">
-              <code>{`from mltracker import tracker
+      {/* Quick usage + Base URL */}
+      <section className="grid gap-6 lg:grid-cols-2">
+        <div>
+          <span className="eyebrow">Then use it like this</span>
+          <div className="mt-4">
+            <CodeWindow
+              filename="quickstart.py"
+              code={`from mltracker import tracker
 
 tracker.start("My Experiment", lr=0.001)
 tracker.log("loss", 0.5, step=1)
 tracker.save_model("model.pkl")
-tracker.finish()`}</code>
-            </pre>
+tracker.finish()`}
+              id="quickstart"
+              copiedCode={copiedCode}
+              onCopy={copyToClipboard}
+            />
           </div>
-        </CardContent>
-      </Card>
-
-      {/* API Endpoint */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Code className="h-5 w-5" />
-            API Endpoint
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-2 rounded-lg border bg-muted p-3 font-mono text-sm">
-            <span className="text-muted-foreground">Base URL:</span>
-            <span className="font-semibold">{apiUrl}</span>
+        </div>
+        <div>
+          <span className="eyebrow">API base URL</span>
+          <div className="mt-4 flex items-center gap-3 rounded-[12px] border border-hairline bg-surface-card px-5 py-6 font-mono text-sm">
+            <span className="text-muted-foreground">Base URL</span>
+            <span className="font-semibold text-brand-yellow">{apiUrl}</span>
           </div>
-        </CardContent>
-      </Card>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            Point the client at this URL, or set{' '}
+            <code className="font-mono text-body-strong">NEXT_PUBLIC_API_URL</code> in your
+            environment. Full interactive docs live at{' '}
+            <a
+              href={`${apiUrl}/docs`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-brand-yellow underline underline-offset-4"
+            >
+              {apiUrl}/docs
+            </a>
+            .
+          </p>
+        </div>
+      </section>
 
-      {/* Code Examples */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5" />
-            Code Examples
-          </CardTitle>
-          <CardDescription>
-            Simple, copy-paste examples to get you started
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      {/* Code examples */}
+      <section>
+        <span className="eyebrow">Code examples</span>
+        <h2 className="mt-2 text-2xl font-bold tracking-tight text-on-dark">
+          Copy, paste, ship
+        </h2>
+        <div className="mt-6">
           <Tabs defaultValue="python">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList>
               <TabsTrigger value="python">Python</TabsTrigger>
               <TabsTrigger value="curl">cURL</TabsTrigger>
               <TabsTrigger value="nodejs">Node.js</TabsTrigger>
             </TabsList>
-            
-            <TabsContent value="python" className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">Python - The Easy Way</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Download mltracker.py and use it in your training code
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowPythonCode(!showPythonCode)}
-                    className="gap-2"
-                  >
-                    {showPythonCode ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    {showPythonCode ? 'Hide Code' : 'Show Code'}
-                  </Button>
-                </div>
-              </div>
-              {showPythonCode && (
-                <CodeBlock code={pythonExample} id="python" copiedCode={copiedCode} onCopy={copyToClipboard} />
-              )}
-            </TabsContent>
 
-            <TabsContent value="curl" className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">cURL - For Testing</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Quick commands to test the API from terminal
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowCurlCode(!showCurlCode)}
-                    className="gap-2"
-                  >
-                    {showCurlCode ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    {showCurlCode ? 'Hide Code' : 'Show Code'}
-                  </Button>
-                </div>
-              </div>
-              {showCurlCode && (
-                <CodeBlock code={curlExample} id="curl" copiedCode={copiedCode} onCopy={copyToClipboard} />
-              )}
+            <TabsContent value="python" className="mt-4">
+              <CodeWindow
+                filename="train.py"
+                code={pythonExample}
+                id="python"
+                copiedCode={copiedCode}
+                onCopy={copyToClipboard}
+              />
             </TabsContent>
-
-            <TabsContent value="nodejs" className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="font-semibold">Node.js - For JS Projects</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Simple async functions for your Node.js apps
-                    </p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowNodeCode(!showNodeCode)}
-                    className="gap-2"
-                  >
-                    {showNodeCode ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                    {showNodeCode ? 'Hide Code' : 'Show Code'}
-                  </Button>
-                </div>
-              </div>
-              {showNodeCode && (
-                <CodeBlock code={nodeExample} id="nodejs" copiedCode={copiedCode} onCopy={copyToClipboard} />
-              )}
+            <TabsContent value="curl" className="mt-4">
+              <CodeWindow
+                filename="requests.sh"
+                code={curlExample}
+                id="curl"
+                copiedCode={copiedCode}
+                onCopy={copyToClipboard}
+              />
+            </TabsContent>
+            <TabsContent value="nodejs" className="mt-4">
+              <CodeWindow
+                filename="track.js"
+                code={nodeExample}
+                id="nodejs"
+                copiedCode={copiedCode}
+                onCopy={copyToClipboard}
+              />
             </TabsContent>
           </Tabs>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      {/* API Reference */}
-      <Card>
-        <CardHeader>
-          <CardTitle>API Reference</CardTitle>
-          <CardDescription>Available endpoints and their usage</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="rounded-lg border p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded bg-green-500/10 px-2 py-1 text-xs font-semibold text-green-600 dark:text-green-400">
-                  POST
-                </span>
-                <code className="text-sm">/experiments</code>
-              </div>
-              <p className="text-sm text-muted-foreground">Create a new experiment</p>
-            </div>
+      {/* API reference */}
+      <section>
+        <span className="eyebrow">API reference</span>
+        <h2 className="mt-2 text-2xl font-bold tracking-tight text-on-dark">Endpoints</h2>
+        <div className="mt-6 space-y-3">
+          <Endpoint method="POST" path="/experiments" desc="Create a new experiment" />
+          <Endpoint method="GET" path="/experiments" desc="List all experiments" />
+          <Endpoint method="GET" path="/experiments/{id}" desc="Get experiment details" />
+          <Endpoint method="POST" path="/experiments/{id}/metrics" desc="Log a metric value" />
+          <Endpoint
+            method="POST"
+            path="/artifacts/experiments/{id}/upload"
+            desc="Upload an artifact file"
+          />
+          <Endpoint method="PUT" path="/experiments/{id}/status" desc="Update experiment status" />
+          <Endpoint method="PUT" path="/experiments/{id}/tags" desc="Update experiment tags" />
+          <Endpoint method="DELETE" path="/experiments/{id}" desc="Delete an experiment" />
+        </div>
+      </section>
 
-            <div className="rounded-lg border p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded bg-blue-500/10 px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
-                  GET
-                </span>
-                <code className="text-sm">/experiments</code>
-              </div>
-              <p className="text-sm text-muted-foreground">List all experiments</p>
-            </div>
-
-            <div className="rounded-lg border p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded bg-blue-500/10 px-2 py-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
-                  GET
-                </span>
-                <code className="text-sm">/experiments/&#123;id&#125;</code>
-              </div>
-              <p className="text-sm text-muted-foreground">Get experiment details</p>
-            </div>
-
-            <div className="rounded-lg border p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded bg-green-500/10 px-2 py-1 text-xs font-semibold text-green-600 dark:text-green-400">
-                  POST
-                </span>
-                <code className="text-sm">/experiments/&#123;id&#125;/metrics</code>
-              </div>
-              <p className="text-sm text-muted-foreground">Log a metric value</p>
-            </div>
-
-            <div className="rounded-lg border p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded bg-green-500/10 px-2 py-1 text-xs font-semibold text-green-600 dark:text-green-400">
-                  POST
-                </span>
-                <code className="text-sm">/experiments/&#123;id&#125;/artifacts</code>
-              </div>
-              <p className="text-sm text-muted-foreground">Upload an artifact file</p>
-            </div>
-
-            <div className="rounded-lg border p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded bg-orange-500/10 px-2 py-1 text-xs font-semibold text-orange-600 dark:text-orange-400">
-                  PUT
-                </span>
-                <code className="text-sm">/experiments/&#123;id&#125;/status</code>
-              </div>
-              <p className="text-sm text-muted-foreground">Update experiment status</p>
-            </div>
-
-            <div className="rounded-lg border p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded bg-orange-500/10 px-2 py-1 text-xs font-semibold text-orange-600 dark:text-orange-400">
-                  PUT
-                </span>
-                <code className="text-sm">/experiments/&#123;id&#125;/tags</code>
-              </div>
-              <p className="text-sm text-muted-foreground">Update experiment tags</p>
-            </div>
-
-            <div className="rounded-lg border p-4">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="rounded bg-red-500/10 px-2 py-1 text-xs font-semibold text-red-600 dark:text-red-400">
-                  DELETE
-                </span>
-                <code className="text-sm">/experiments/&#123;id&#125;</code>
-              </div>
-              <p className="text-sm text-muted-foreground">Delete an experiment</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Closing CTA */}
+      <section className="rounded-[12px] border border-hairline bg-surface-card p-8 text-center sm:p-12">
+        <h2 className="text-2xl font-bold tracking-tight text-on-dark sm:text-3xl">
+          Ready to track your first run?
+        </h2>
+        <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
+          Create an experiment from the dashboard, or wire up the client and it appears
+          automatically.
+        </p>
+        <div className="mt-6 flex justify-center">
+          <Link href="/experiments/new">
+            <Button size="lg">
+              Create experiment
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

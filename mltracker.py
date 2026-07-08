@@ -80,13 +80,14 @@ class SimpleMLTracker:
             raise ValueError("No active experiment. Call start() first!")
         
         try:
+            payload = {"metric_name": metric_name, "value": float(value)}
+            # Only send step when provided; the API defaults it to 0 otherwise.
+            if step is not None:
+                payload["step"] = step
+
             response = requests.post(
                 f"{self.api_url}/experiments/{self.experiment_id}/metrics",
-                json={
-                    "metric_name": metric_name,
-                    "value": float(value),
-                    "step": step
-                }
+                json=payload
             )
             response.raise_for_status()
             
@@ -127,7 +128,7 @@ class SimpleMLTracker:
                 files = {'file': f}
                 data = {'artifact_type': artifact_type}
                 response = requests.post(
-                    f"{self.api_url}/experiments/{self.experiment_id}/artifacts",
+                    f"{self.api_url}/artifacts/experiments/{self.experiment_id}/upload",
                     files=files,
                     data=data
                 )

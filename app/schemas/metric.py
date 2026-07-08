@@ -6,7 +6,7 @@ import math
 
 
 class MetricCreate(BaseModel):
-    step: int = Field(..., ge=0)
+    step: int = Field(default=0, ge=0)
     metric_name: str = Field(..., max_length=100)
     value: float
     

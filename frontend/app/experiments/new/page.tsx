@@ -68,11 +68,14 @@ export default function NewExperimentPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight">Create New Experiment</h1>
-        <p className="text-muted-foreground">
-          Start tracking a new machine learning experiment
+    <div className="mx-auto max-w-2xl">
+      <div className="mb-8">
+        <span className="badge-yellow">New run</span>
+        <h1 className="mt-5 text-3xl font-bold tracking-tight text-on-dark sm:text-4xl">
+          Create experiment
+        </h1>
+        <p className="mt-3 text-base text-body">
+          Start tracking a new machine learning experiment.
         </p>
       </div>
 
@@ -103,7 +106,7 @@ export default function NewExperimentPage() {
                 value={hyperparameters}
                 onChange={(e) => setHyperparameters(e.target.value)}
                 placeholder='{"learning_rate": 0.001, "batch_size": 32}'
-                className="w-full min-h-[100px] px-3 py-2 text-sm border rounded-md"
+                className="min-h-[120px] w-full rounded-md border border-hairline bg-surface-card px-3.5 py-2.5 font-mono text-sm text-on-dark outline-none transition-colors placeholder:text-muted-soft focus-visible:border-brand-yellow"
               />
               <p className="text-xs text-muted-foreground">
                 Enter hyperparameters as JSON. Example: {`{"lr": 0.001, "batch_size": 32}`}
